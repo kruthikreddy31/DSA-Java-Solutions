@@ -1,30 +1,31 @@
 class Solution {
     public long maximumSubarraySum(int[] nums, int k) {
-        HashMap<Integer, Integer> map = new HashMap<>();
 
-        long sum = 0;
         long ans = 0;
+        long currSum = 0;
 
-        for (int i = 0; i < nums.length; i++) {
+        int begin = 0;
+        int end = 0;
 
-            sum += nums[i];
-            map.put(nums[i], map.getOrDefault(nums[i], 0) + 1);
+        HashMap<Integer, Integer> lastSeen = new HashMap<>();
 
-            // Keep window size = k
-            if (i >= k) {
-                sum -= nums[i - k];
+        while (end < nums.length) {
 
-                map.put(nums[i - k], map.get(nums[i - k]) - 1);
+            int curr = nums[end];
+            int lastIndex = lastSeen.getOrDefault(curr, -1);
 
-                if (map.get(nums[i - k]) == 0) {
-                    map.remove(nums[i - k]);
-                }
+            while (lastIndex >= begin || (end - begin + 1) > k) {
+                currSum -= nums[begin];
+                begin++;
             }
 
-            // Check if window has k distinct elements
-            if (i >= k - 1 && map.size() == k) {
-                ans = Math.max(ans, sum);
+            currSum += nums[end];
+            lastSeen.put(curr, end);
+            if (end - begin + 1 == k) {
+                ans = Math.max(ans, currSum);
             }
+
+            end++;
         }
 
         return ans;
