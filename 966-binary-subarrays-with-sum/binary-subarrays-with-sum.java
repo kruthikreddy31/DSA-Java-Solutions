@@ -1,26 +1,22 @@
 class Solution {
-    public int numSubarraysWithSum(int[] nums, int goal) {
-        return atMost(nums, goal) - atMost(nums, goal - 1);
-    }
+    public int numSubarraysWithSum(int[] nums, int k) {
+        
+        HashMap<Integer, Integer> map = new HashMap<>();
 
-    public int atMost(int[] nums, int goal) {
-        if (goal < 0)
-            return 0;
+        map.put(0, 1);
 
-        int left = 0;
-        int sum = 0;
+        int prefix = 0;
         int count = 0;
 
-        for (int right = 0; right < nums.length; right++) {
+        for (int num : nums) {
 
-            sum += nums[right];
+            prefix += num;
 
-            while (sum > goal) {
-                sum -= nums[left];
-                left++;
+            if (map.containsKey(prefix - k)) {
+                count += map.get(prefix - k);
             }
 
-            count += right - left + 1;
+            map.put(prefix, map.getOrDefault(prefix, 0) + 1);
         }
 
         return count;
